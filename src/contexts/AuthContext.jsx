@@ -49,17 +49,19 @@ export const AuthProvider = ({ children }) => {
         if (error) {
           console.error('❌ Session error:', error)
           setUser(null)
+          setLoading(false)
         } else if (session?.user) {
           console.log('✅ User authenticated:', session.user.email)
           setUser(session.user)
+          setLoading(false)
         } else {
           console.log('👤 No active session')
           setUser(null)
+          setLoading(false)
         }
       } catch (error) {
         console.error('💥 Exception getting session:', error)
         setUser(null)
-      } finally {
         setLoading(false)
       }
     }
@@ -74,6 +76,7 @@ export const AuthProvider = ({ children }) => {
         if (event === 'SIGNED_IN' && session?.user) {
           console.log('✅ Successfully signed in:', session.user.email)
           setUser(session.user)
+          setLoading(false)
           // Clean up URL fragments after successful sign in
           if (window.location.hash) {
             console.log('🧹 Cleaning up URL after successful sign in')
@@ -82,15 +85,25 @@ export const AuthProvider = ({ children }) => {
         } else if (event === 'SIGNED_OUT') {
           console.log('👋 User signed out')
           setUser(null)
+          setLoading(false)
         } else if (event === 'TOKEN_REFRESHED' && session?.user) {
           console.log('🔄 Token refreshed for:', session.user.email)
           setUser(session.user)
+          setLoading(false)
+        } else if (event === 'INITIAL_SESSION') {
+          // Handle initial session properly
+          if (session?.user) {
+            console.log('🏠 Initial session with user:', session.user.email)
+            setUser(session.user)
+          } else {
+            console.log('🏠 Initial session without user')
+            setUser(null)
+          }
+          setLoading(false)
         } else {
-          console.log('👤 No user session')
-          setUser(null)
+          console.log('👤 No user session for event:', event)
+          setLoading(false)
         }
-        
-        setLoading(false)
       }
     )
 
