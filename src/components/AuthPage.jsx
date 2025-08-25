@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
+import { isDemoMode } from '../lib/supabase'
 import { CreditCard, TrendingUp, Shield, Sparkles } from 'lucide-react'
 
 export default function AuthPage() {
@@ -75,6 +76,20 @@ export default function AuthPage() {
               <span className="leading-tight">Discover the best deals across platforms</span>
             </div>
           </div>
+
+          {/* Demo Mode Notice */}
+          {isDemoMode && (
+            <div className="mb-4 p-3 rounded-lg text-center text-sm" style={{
+              backgroundColor: 'rgba(245, 158, 11, 0.1)',
+              border: '1px solid rgba(245, 158, 11, 0.3)',
+              color: '#FCD34D'
+            }}>
+              <p>⚠️ Running in demo mode</p>
+              <p className="text-xs mt-1" style={{ color: '#CBD5E1' }}>
+                Add Supabase credentials to enable authentication
+              </p>
+            </div>
+          )}
 
           {/* Sign In Button - Mobile Optimized */}
           <button

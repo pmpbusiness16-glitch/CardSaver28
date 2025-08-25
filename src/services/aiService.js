@@ -7,12 +7,17 @@ const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY
 
 export class AIService {
   constructor() {
-    if (!DEEPSEEK_API_KEY && !GEMINI_API_KEY) {
-      throw new Error('No AI API keys found in environment variables')
+    this.isDemo = !DEEPSEEK_API_KEY && !GEMINI_API_KEY
+    if (this.isDemo) {
+      console.warn('AI Service running in demo mode - no API keys found')
     }
   }
 
   async searchProducts(query) {
+    if (this.isDemo) {
+      return this.getDemoData(query)
+    }
+
     try {
       // Step 1: Get real product data from scraping service
       console.log('🔍 Fetching real product data...')
@@ -34,6 +39,54 @@ export class AIService {
       
       // Fallback to AI-only search
       return await this.fallbackSearch(query)
+    }
+  }
+
+  getDemoData(query) {
+    return {
+      products: [
+        {
+          name: `Sample ${query} Product 1`,
+          price: 'Rs 1,299',
+          originalPrice: 'Rs 1,599',
+          discount: '19% OFF',
+          retailer: 'Demo Store',
+          link: '#',
+          image: '/vite.svg',
+          rating: 4.5,
+          features: ['High Quality', 'Fast Delivery', 'Best Seller']
+        },
+        {
+          name: `Sample ${query} Product 2`,
+          price: 'Rs 2,199',
+          originalPrice: 'Rs 2,999',
+          discount: '27% OFF',
+          retailer: 'Demo Mall',
+          link: '#',
+          image: '/vite.svg',
+          rating: 4.2,
+          features: ['Premium Quality', 'Warranty Included']
+        }
+      ],
+      creditCardRecommendations: [
+        {
+          bankName: 'Demo Bank',
+          cardName: 'Cashback Rewards Card',
+          cashbackPercentage: 5,
+          annualFee: 'Free',
+          potentialEarnings: 'Rs 120',
+          category: 'Shopping',
+          features: ['5% cashback on online shopping', 'No annual fee', 'Instant approval']
+        }
+      ],
+      bestDeal: {
+        productIndex: 0,
+        reasoning: 'Best value for money with highest discount',
+        cardRecommendation: 'Demo Bank Cashback Rewards Card'
+      },
+      realDataFetched: false,
+      isDemo: true,
+      timestamp: new Date().toISOString()
     }
   }
 
