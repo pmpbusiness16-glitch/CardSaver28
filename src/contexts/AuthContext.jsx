@@ -107,13 +107,24 @@ export const AuthProvider = ({ children }) => {
           error: null 
         }
       }
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/dashboard`
+      console.log('🚀 Starting Google OAuth...', window.location.origin)
+      try {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: `${window.location.origin}/dashboard`
+          }
+        })
+        if (error) {
+          console.error('❌ OAuth error:', error)
+        } else {
+          console.log('✅ OAuth initiated successfully')
         }
-      })
-      return { data, error }
+        return { data, error }
+      } catch (err) {
+        console.error('💥 OAuth exception:', err)
+        return { data: null, error: err }
+      }
     },
     signOut: async () => {
       if (isDemoMode) {
