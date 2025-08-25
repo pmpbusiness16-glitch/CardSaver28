@@ -22,11 +22,28 @@ export const AuthProvider = ({ children }) => {
       return
     }
 
+    // Handle URL fragments from OAuth redirects
+    const handleAuthRedirect = async () => {
+      const hashParams = new URLSearchParams(window.location.hash.substring(1))
+      if (hashParams.get('access_token')) {
+        // Clean up URL
+        window.history.replaceState({}, document.title, window.location.pathname)
+      }
+    }
+
+    handleAuthRedirect()
+
     // Get initial session
     const getInitialSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      setUser(session?.user ?? null)
-      setLoading(false)
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        setUser(session?.user ?? null)
+      } catch (error) {
+        console.error('Error getting session:', error)
+        setUser(null)
+      } finally {
+        setLoading(false)
+      }
     }
 
     getInitialSession()
@@ -36,6 +53,11 @@ export const AuthProvider = ({ children }) => {
       (event, session) => {
         setUser(session?.user ?? null)
         setLoading(false)
+        
+        // Clean up URL fragments after auth
+        if (event === 'SIGNED_IN' && window.location.hash) {
+          window.history.replaceState({}, document.title, window.location.pathname)
+        }
       }
     )
 
