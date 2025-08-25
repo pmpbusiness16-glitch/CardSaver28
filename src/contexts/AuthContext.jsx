@@ -30,23 +30,17 @@ export const AuthProvider = ({ children }) => {
       return
     }
 
-    // Handle URL fragments from OAuth redirects
-    const handleAuthRedirect = async () => {
-      const hash = window.location.hash.substring(1)
-      if (hash) {
-        console.log('🔗 OAuth redirect detected:', hash.substring(0, 50) + '...')
-        const hashParams = new URLSearchParams(hash)
-        if (hashParams.get('access_token')) {
-          console.log('🎫 Access token found in URL')
-          // Clean up URL
-          window.history.replaceState({}, document.title, window.location.pathname)
-        }
+    // Check for OAuth redirect and wait for Supabase to handle it automatically
+    const hash = window.location.hash.substring(1)
+    if (hash) {
+      console.log('🔗 OAuth redirect detected:', hash.substring(0, 50) + '...')
+      const hashParams = new URLSearchParams(hash)
+      if (hashParams.get('access_token')) {
+        console.log('🎫 Access token found - Supabase will process automatically via onAuthStateChange')
       }
     }
 
-    handleAuthRedirect()
-
-    // Get initial session
+    // Get initial session (Supabase handles OAuth automatically)
     const getInitialSession = async () => {
       try {
         console.log('🔍 Getting initial session...')
