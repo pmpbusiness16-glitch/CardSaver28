@@ -70,13 +70,27 @@ export const AuthProvider = ({ children }) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         console.log('🔄 Auth state changed:', event, session?.user?.email || 'no user')
-        setUser(session?.user ?? null)
-        setLoading(false)
         
-        // Clean up URL fragments after auth
-        if (event === 'SIGNED_IN' && window.location.hash) {
-          window.history.replaceState({}, document.title, window.location.pathname)
+        if (event === 'SIGNED_IN' && session?.user) {
+          console.log('✅ Successfully signed in:', session.user.email)
+          setUser(session.user)
+          // Clean up URL fragments after successful sign in
+          if (window.location.hash) {
+            console.log('🧹 Cleaning up URL after successful sign in')
+            window.history.replaceState({}, document.title, window.location.pathname)
+          }
+        } else if (event === 'SIGNED_OUT') {
+          console.log('👋 User signed out')
+          setUser(null)
+        } else if (event === 'TOKEN_REFRESHED' && session?.user) {
+          console.log('🔄 Token refreshed for:', session.user.email)
+          setUser(session.user)
+        } else {
+          console.log('👤 No user session')
+          setUser(null)
         }
+        
+        setLoading(false)
       }
     )
 

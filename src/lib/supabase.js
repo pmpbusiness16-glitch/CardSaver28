@@ -10,8 +10,24 @@ console.log('🔧 Supabase Configuration:', {
   hasUrl: !!supabaseUrl,
   hasKey: !!supabaseAnonKey,
   isDemoMode,
-  url: supabaseUrl ? `${supabaseUrl.substring(0, 20)}...` : 'MISSING'
+  url: supabaseUrl ? `${supabaseUrl.substring(0, 20)}...` : 'MISSING',
+  keyPreview: supabaseAnonKey ? `${supabaseAnonKey.substring(0, 20)}...` : 'MISSING'
 })
+
+// Additional validation
+if (supabaseUrl && !supabaseUrl.includes('supabase.co')) {
+  console.error('❌ Invalid Supabase URL format:', supabaseUrl)
+}
+
+if (supabaseAnonKey && !supabaseAnonKey.startsWith('eyJ')) {
+  console.error('❌ Invalid Supabase anon key format - should start with "eyJ"')
+}
+
+// Check if URL matches the expected project
+const expectedUrlPattern = 'srhwahpoipevrmztdwgz.supabase.co'
+if (supabaseUrl && !supabaseUrl.includes(expectedUrlPattern)) {
+  console.warn('⚠️ Supabase URL mismatch. Expected:', expectedUrlPattern, 'Got:', supabaseUrl)
+}
 
 if (isDemoMode) {
   console.warn('⚠️ SUPABASE NOT CONFIGURED: Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to environment variables')
