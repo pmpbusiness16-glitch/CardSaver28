@@ -84,9 +84,12 @@ export default function AuthPage() {
               border: '1px solid rgba(245, 158, 11, 0.3)',
               color: '#FCD34D'
             }}>
-              <p>⚠️ Running in demo mode</p>
+              <p>⚠️ Environment Variables Missing</p>
               <p className="text-xs mt-1" style={{ color: '#CBD5E1' }}>
-                Add Supabase credentials to enable authentication
+                Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to Vercel environment variables
+              </p>
+              <p className="text-xs mt-1" style={{ color: '#F87171' }}>
+                Check browser console for detailed configuration info
               </p>
             </div>
           )}
