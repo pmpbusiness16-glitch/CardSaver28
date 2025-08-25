@@ -1,10 +1,10 @@
 {
   "version": 2,
   "name": "cardsaver-app",
-  "routes": [
+  "rewrites": [
     {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
   "env": {
